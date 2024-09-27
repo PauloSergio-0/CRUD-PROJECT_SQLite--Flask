@@ -31,3 +31,16 @@ class Access_data:
                 return jsonify(filtro)
         except Exception as e:
             return jsonify({"Erro": str(e)}), 500
+        
+        
+    def insert_veiculo(self,marca_veiculo: str, modelo_veiculo: str, preco_veiculo: float, Qtde_veiculo: int):
+        url_insert = f"http://localhost:8000/db/insert_data?marca_veiculo={marca_veiculo}&modelo_veiculo={modelo_veiculo}&preco_veiculo={preco_veiculo}&Qtde_veiculo={Qtde_veiculo}"
+        
+        try:
+            reponse = requests.get(url_insert)
+            
+            if reponse.status_code == 200:
+                menssage = reponse.json()
+                return jsonify(menssage)
+        except Exception as e:
+            return jsonify({"Erro": str(e)}), 500

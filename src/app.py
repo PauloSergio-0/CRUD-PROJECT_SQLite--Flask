@@ -22,5 +22,14 @@ def filter_data():
     
     return Access_data().filtro_veiculo(marca.capitalize())
 
+@app.route("/insert")
+def insert():
+    marca = request.args.get('marca')
+    modelo = request.args.get('modelo')
+    preco = request.args.get('preco')
+    qtde = request.args.get('qtde')
+    
+    return Access_data().insert_veiculo(marca, modelo, preco, qtde)
+
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
