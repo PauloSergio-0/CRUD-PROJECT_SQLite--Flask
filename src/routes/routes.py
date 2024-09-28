@@ -44,3 +44,16 @@ class Access_data:
                 return jsonify(menssage)
         except Exception as e:
             return jsonify({"Erro": str(e)}), 500
+
+        
+    def delete_veiculo(self, marca_veiculo,modelo_veiculo: str):
+        url_insert = f"http://localhost:8000/db/delete_data?marca_veiculo={marca_veiculo}&modelo_veiculo={modelo_veiculo}"
+        
+        try:
+            reponse = requests.get(url_insert)            
+            if reponse.status_code == 200:
+                menssage = reponse.json()
+                return jsonify(menssage)
+            
+        except Exception as e:
+            return jsonify({"Erro": str(e)}), 500
