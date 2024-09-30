@@ -2,7 +2,7 @@ from flask import  jsonify
 import requests
 
 class Access_data:
-        
+
     def obter_veiculos(self):
         # URL da outra API
         url = 'http://localhost:8000/db/list_data'
@@ -19,41 +19,59 @@ class Access_data:
 
         except Exception as e:
             return jsonify({"error": str(e)}), 500  # Retornando erro em caso de falha
-    
-    def filtro_veiculo(self, marca):
-        url_filter = f'http://localhost:8000/db/filter_data?marca_veiculo={marca}'
-        
+
+    def filtro_veiculo(self, payload: dict):
+        print(payload)
+        url_filter = f'http://localhost:8000/db/filter_data'
         try:
-            response = requests.get(url_filter)
-            
+            response = requests.get(url_filter, params=payload)
+
             if response.status_code == 200:
                 filtro = response.json()
                 return jsonify(filtro)
         except Exception as e:
             return jsonify({"Erro": str(e)}), 500
-        
-        
-    def insert_veiculo(self,marca_veiculo: str, modelo_veiculo: str, preco_veiculo: float, Qtde_veiculo: int):
-        url_insert = f"http://localhost:8000/db/insert_data?marca_veiculo={marca_veiculo}&modelo_veiculo={modelo_veiculo}&preco_veiculo={preco_veiculo}&Qtde_veiculo={Qtde_veiculo}"
-        
+
+
+    def insert_veiculo(self,marca_v: str = None, modelo_v: str = None, preco_v: float = None, Qtde_v:int = None):
+        url_insert = f"http://localhost:8000/db/insert_data"
+
+        payload = {
+            "marca_veiculo": marca_v,
+            "modelo_veiculo": modelo_v,
+            "preco_veiculo": preco_v,
+            "qtde_veiculo": Qtde_v
+            }
+
+        for key, values in payload.items():
+            if not values:
+                return jsonify({"MenssageError": f"Chave {key}: não pode ser vazia"}),400
+
+
         try:
-            reponse = requests.get(url_insert)
-            
+            print(payload)
+            reponse = requests.post(url_insert, params=payload)
+
             if reponse.status_code == 200:
                 menssage = reponse.json()
-                return jsonify(menssage)
+                return jsonify(menssage), 200
         except Exception as e:
             return jsonify({"Erro": str(e)}), 500
 
+
+    def delete_veiculo(self, marca_veiculo:str, modelo_veiculo: str):
+        url_insert = f"http://localhost:8000/db/delete_data"
         
-    def delete_veiculo(self, marca_veiculo,modelo_veiculo: str):
-        url_insert = f"http://localhost:8000/db/delete_data?marca_veiculo={marca_veiculo}&modelo_veiculo={modelo_veiculo}"
+        payload = {
+            "marca_veiculo": marca_veiculo,
+            "modelo_veiculo": modelo_veiculo
+        }
         
         try:
-            reponse = requests.get(url_insert)            
+            reponse = requests.delete(url_insert, params=payload)
             if reponse.status_code == 200:
                 menssage = reponse.json()
                 return jsonify(menssage)
-            
+
         except Exception as e:
             return jsonify({"Erro": str(e)}), 500
