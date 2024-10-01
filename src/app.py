@@ -32,9 +32,6 @@ def filter_data():
         payload["qtde_veiculo"] = qtde
     
 
-    # if not marca:
-    #     return jsonify({"Erro": "Marca não fornecida."}), 400
-
     return Access_data().filtro_veiculo(payload)
 
 @app.route("/insert", methods=["POST"])
@@ -52,12 +49,45 @@ def insert_data():
 
 @app.route("/delete", methods=["DELETE"])
 def delete_data():
+    data = {}
+    try:
+        marca = request.args.get('marca')
+        modelo = request.args.get('modelo')
+        
+        if marca:
+            data["marca_veiculo"] = marca.capitalize()
+            
+        if modelo:
+            data["modelo_veiculo"] = modelo.capitalize()
+
+    except Exception as e:
+        return jsonify({"Erro": f"Esse é o erro {e}"})
     
-    marca = request.args.get('marca')
-    modelo = request.args.get('modelo')
+    return Access_data().delete_veiculo(data)
 
-    return Access_data().delete_veiculo(marca_veiculo=marca.capitalize(), modelo_veiculo=modelo.capitalize())
 
+@app.route("/update", methods = ["POST"])
+def update():
+    marca_veiculo = request.args.get('marca')
+    modelo_veiculo = request.args.get('modelo')
+    new_marca = request.args.get('new_marca')
+    new_modelo = request.args.get('new_modelo')
+    new_preco = request.args.get('new_preco')
+    new_qtde = request.args.get('new_qtde')
+
+        
+    data_update = {k: v for k,v in {
+            "marca_veiculo": marca_veiculo.capitalize(),
+            "modelo_veiculo": modelo_veiculo.capitalize(),
+            "new_marca_veiculo": new_marca.capitalize(),
+            "new_modelo_veiculo": new_modelo.capitalize(),
+            "new_preco_veiculo": float(new_preco),
+            "new_qtde_veiculo": int(new_qtde)
+                }.items()
+                if v is not None
+            }
+    print(data_update)
+    return Access_data().update_veiculo(data_update)
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
