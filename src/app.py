@@ -13,25 +13,21 @@ def data():
 
 @app.route("/filter", methods=["GET"])
 def filter_data():
-    marca = request.args.get('marca')
-    modelo = request.args.get('modelo')
+    marca: str = request.args.get('marca')
+    modelo: str = request.args.get('modelo')
     preco = request.args.get('preco')
     qtde = request.args.get('qtde')
     
-    payload = {}
-    if marca:
-        payload["marca_veiculo"] = marca.capitalize()
-        
-    if modelo:
-        payload["modelo_veiculo"] = modelo.capitalize()
-        
-    if preco:
-        payload["preco_veiculo"] = preco
-        
-    if qtde:
-        payload["qtde_veiculo"] = qtde
+    payload = {
+        k: v.capitalize() for k, v in
+            {
+            "marca_veiculo": marca,
+            "modelo_veiculo": modelo,
+            "preco_veiculo":  float(preco) if preco else None,
+            "qtde_veiculo": int(qtde) if preco else None
+            }.items() if v is not None
+        }
     
-
     return Access_data().filtro_veiculo(payload)
 
 @app.route("/insert", methods=["POST"])
@@ -41,6 +37,8 @@ def insert_data():
         modelo = request.args.get('modelo')
         preco = request.args.get('preco')
         qtde = request.args.get('qtde')
+        
+        
         
     except Exception as e:
         return jsonify({"Erro": f"Esse é o erro {e}"})
@@ -54,12 +52,13 @@ def delete_data():
         marca = request.args.get('marca')
         modelo = request.args.get('modelo')
         
-        if marca:
-            data["marca_veiculo"] = marca.capitalize()
-            
-        if modelo:
-            data["modelo_veiculo"] = modelo.capitalize()
-
+        data = {
+            k: v for k, v in {
+                "marca_veiculo": marca.capitalize(),
+                "modelo_veiculo": modelo.capitalize()
+            }.items() if v is not None
+        }
+        print(data)
     except Exception as e:
         return jsonify({"Erro": f"Esse é o erro {e}"})
     
@@ -76,16 +75,16 @@ def update():
     new_qtde = request.args.get('new_qtde')
 
         
-    data_update = {k: v for k,v in {
+    data_update = {
+        k: v for k, v in {
             "marca_veiculo": marca_veiculo.capitalize(),
             "modelo_veiculo": modelo_veiculo.capitalize(),
             "new_marca_veiculo": new_marca.capitalize(),
             "new_modelo_veiculo": new_modelo.capitalize(),
             "new_preco_veiculo": float(new_preco),
             "new_qtde_veiculo": int(new_qtde)
-                }.items()
-                if v is not None
-            }
+            }.items() if v is not None
+        }
     print(data_update)
     return Access_data().update_veiculo(data_update)
 

@@ -88,4 +88,4 @@ class Access_data:
                 return jsonify(menssage), 200
             
         except Exception as e:
-            return jsonify({"Erro": e}), 500
+            return jsonify({"Erro": str(e)}), 500
