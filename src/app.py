@@ -1,7 +1,6 @@
 from flask import Flask, jsonify, request
 from routes.routes import Access_data
 
-
 app = Flask(__name__)
 
 
